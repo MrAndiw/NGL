@@ -1,8 +1,8 @@
 package router
 
 import (
-	"rumah-hewan/api/handlers"
-	"rumah-hewan/api/middlewares"
+	"NGL/api/handlers"
+	"NGL/api/middlewares"
 
 	"github.com/labstack/echo"
 )
@@ -35,6 +35,9 @@ func New() *echo.Echo {
 
 func MainRouter(e *echo.Echo) {
 	e.GET("/home", handlers.Home)
+	e.POST("/SetQuestion", handlers.SetQuestion)
+	e.POST("/GetQuestion", handlers.GetQuestion)
+
 	e.GET("/login", handlers.Login)
 
 	e.GET("/getKucing/:type", handlers.GetKucingFunc)

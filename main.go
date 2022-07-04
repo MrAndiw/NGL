@@ -1,10 +1,10 @@
 package main
 
 import (
+	"NGL/config"
+	"NGL/router"
 	"fmt"
 	"log"
-	"rumah-hewan/config"
-	"rumah-hewan/router"
 )
 
 func main() {

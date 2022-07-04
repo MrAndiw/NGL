@@ -1,7 +1,7 @@
 package db
 
 import (
-	"rumah-hewan/config"
+	"NGL/config"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"

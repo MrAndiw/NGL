@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"rumah-hewan/config"
+	"NGL/config"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
