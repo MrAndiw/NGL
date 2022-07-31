@@ -10,7 +10,12 @@ import (
 func main() {
 	fmt.Println("Server is starting")
 
-	e := router.New()
+	// config, err := config.LoadConfig(".")
+	// if err != nil {
+	// 	log.Fatal("config tidak di temukan", err)
+	// }
+
+	e := router.Start()
 
 	port := os.Getenv("PORT")
 	err := e.Start(":" + port)

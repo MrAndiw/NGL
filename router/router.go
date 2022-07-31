@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo"
 )
 
-func New() *echo.Echo {
+func Start() *echo.Echo {
 
 	e := echo.New()
 
@@ -28,8 +28,10 @@ func New() *echo.Echo {
 }
 
 func MainRouter(e *echo.Echo) {
-	e.POST("/SetQuestion", handlers.SetQuestion)
+	e.POST("/CreateQuestion", handlers.CreateQuestion)
 	e.POST("/GetQuestion", handlers.GetQuestion)
+	e.POST("/DeleteQuestion", handlers.DeleteQuestion)
+	e.POST("/ReadQuestion", handlers.ReadQuestion)
 
 	e.GET("/login", handlers.Login)
 }

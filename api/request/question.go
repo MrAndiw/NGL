@@ -10,3 +10,11 @@ type QuestionRequest struct {
 	ToUser   string `json:"to_user"`
 	Question string `json:"question"`
 }
+
+type DeleteQuestionRequest struct {
+	Id string `json:"id"`
+}
+
+type ReadQuestionRequest struct {
+	Id string `json:"id"`
+}

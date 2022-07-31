@@ -21,8 +21,8 @@ type Question struct {
 	CreatedAt time.Time          `bson:"created_at" json:"created_at"`
 }
 
-// SetQuestion is public : first function name capital
-func SetQuestion(c echo.Context) error {
+// CreateQuestion is public : first function name capital
+func CreateQuestion(c echo.Context) error {
 	// bind request
 	req := request.QuestionRequest{}
 	if err := c.Bind(&req); err != nil {
@@ -47,11 +47,14 @@ func SetQuestion(c echo.Context) error {
 		CreatedAt: time.Now().In(time.UTC),
 	})
 	if err != nil {
-		return err
+		return c.JSON(http.StatusBadRequest, request.ResponseInsert{
+			Message: "Data Gagal Simpan.",
+			Status:  "FAILED",
+		})
 	}
 
 	return c.JSON(http.StatusOK, request.ResponseInsert{
-		Message: "Data Berhasil Disimpan.",
+		Message: "Data Berhasil Simpan.",
 		Status:  "SUCCESS",
 	})
 }
@@ -99,7 +102,109 @@ func GetQuestion(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, request.ResponseInsert{
 		Data:    questions,
-		Message: "Data Berhasil Disimpan.",
+		Message: "Data Berhasil Diambil.",
+		Status:  "SUCCESS",
+	})
+}
+
+// DeleteQuestion is public : first function name capital
+func DeleteQuestion(c echo.Context) error {
+	// bind request
+	req := request.DeleteQuestionRequest{}
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusNotFound, err)
+	}
+
+	// mongo connection
+	client := db.MgoConn()
+	defer client.Disconnect(context.TODO())
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	var (
+		table = db.MgoCollection("questions", client)
+	)
+
+	objID, err := primitive.ObjectIDFromHex(req.Id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, request.ResponseInsert{
+			Message: "[Delete Question] ID not found",
+			Status:  "FAILED",
+		})
+	}
+
+	_, err = table.DeleteOne(ctx, bson.D{
+		{Key: "_id", Value: objID},
+	})
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, request.ResponseInsert{
+			Message: "[Delete Question] Gagal delete question",
+			Status:  "FAILED",
+		})
+	}
+
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, request.ResponseInsert{
+			Message: "Data Gagal Delete.",
+			Status:  "FAILED",
+		})
+	}
+
+	return c.JSON(http.StatusOK, request.ResponseInsert{
+		Message: "Data Berhasil Delete.",
+		Status:  "SUCCESS",
+	})
+}
+
+// ReadQuestion is public : first function name capital
+func ReadQuestion(c echo.Context) error {
+	// bind request
+	req := request.ReadQuestionRequest{}
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusNotFound, err)
+	}
+
+	// mongo connection
+	client := db.MgoConn()
+	defer client.Disconnect(context.TODO())
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	var (
+		table = db.MgoCollection("questions", client)
+	)
+
+	objID, err := primitive.ObjectIDFromHex(req.Id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, request.ResponseInsert{
+			Message: "[Set Read Question] ID not found",
+			Status:  "FAILED",
+		})
+	}
+
+	_, err = table.UpdateOne(ctx, bson.D{{Key: "_id", Value: objID}}, bson.D{
+		{Key: "$set", Value: bson.M{
+			"is_read": true,
+		}},
+	})
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, request.ResponseInsert{
+			Message: "[Set Read Question] Gagal set read question",
+			Status:  "FAILED",
+		})
+	}
+
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, request.ResponseInsert{
+			Message: "Data Gagal Set Read.",
+			Status:  "FAILED",
+		})
+	}
+
+	return c.JSON(http.StatusOK, request.ResponseInsert{
+		Message: "Data Berhasil Set Read.",
 		Status:  "SUCCESS",
 	})
 }
