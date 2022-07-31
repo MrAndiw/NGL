@@ -1,7 +1,7 @@
 {
     "app" : {
         "name" : "NGL",
-        "host" : "https://protected-shore-57763.herokuapp.com"
+        "host" : "protected-shore-57763.herokuapp.com"
     },
     "database" : {
         "mysql" : "root:23031996@tcp(127.0.0.1:3306)/rumah-hewan-db?charset=utf8mb4&parseTime=True&loc=Local",

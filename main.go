@@ -1,7 +1,6 @@
 package main
 
 import (
-	"NGL/config"
 	"NGL/router"
 	"fmt"
 	"log"
@@ -11,13 +10,11 @@ import (
 func main() {
 	fmt.Println("Server is starting")
 
-	config, err := config.LoadConfig(".")
-	if err != nil {
-		log.Fatal("config tidak di temukan", err)
-	}
-
 	e := router.New()
 
 	port := os.Getenv("PORT")
-	e.Start(config.App.Host + ":" + port)
+	err := e.Start(":" + port)
+	if err != nil {
+		log.Fatal("aplikasi tidak jalan ", err)
+	}
 }
