@@ -6,9 +6,13 @@ import (
 )
 
 func SetMainMiddlewares(e *echo.Echo) {
-	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
-		Root:  "template",
-		Index: "index.html",
+	// e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
+	// 	Root:  "template",
+	// 	Index: "index.html",
+	// }))
+
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: "[${method}], host=${host}${path}, status=${status} latency=${latency}\n",
 	}))
 
 	// Server header

@@ -5,6 +5,7 @@ import (
 	"NGL/router"
 	"fmt"
 	"log"
+	"os"
 )
 
 func main() {
@@ -17,5 +18,6 @@ func main() {
 
 	e := router.New()
 
-	e.Start(config.App.Host)
+	port := os.Getenv("PORT")
+	e.Start(config.App.Host + ":" + port)
 }
