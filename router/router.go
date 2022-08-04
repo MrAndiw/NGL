@@ -67,6 +67,8 @@ func Start() *echo.Echo {
 
 func MainRouter(e *echo.Echo) {
 	e.GET("/", handlers.Home)
+	e.GET("/inbox", handlers.Inbox)
+	e.GET("/inbox-detail/:id", handlers.InboxDetail)
 	e.POST("/CreateQuestion", handlers.CreateQuestion)
 	e.POST("/GetQuestion", handlers.GetQuestion)
 	e.POST("/DeleteQuestion", handlers.DeleteQuestion)

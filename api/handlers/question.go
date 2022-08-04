@@ -10,6 +10,7 @@ import (
 	"github.com/labstack/echo"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -59,6 +60,37 @@ func CreateQuestion(c echo.Context) error {
 	})
 }
 
+func QueryGetQuestion(toUser string, client *mongo.Client, ctx context.Context) ([]Question, error) {
+	var questions = make([]Question, 0)
+
+	// == get data question ===
+	coll := db.MgoCollection("questions", client)
+	result, err := coll.Find(
+		ctx,
+		bson.M{
+			"to_user": toUser,
+		},
+		options.Find().SetSort(bson.M{"created_at": -1}),
+	)
+	if err != nil {
+		return questions, err
+	}
+
+	defer result.Close(ctx)
+
+	for result.Next(ctx) {
+		var question Question
+		err = result.Decode(&question)
+		if err != nil {
+			return questions, err
+		}
+
+		questions = append(questions, question)
+	}
+
+	return questions, nil
+}
+
 // GetQuestion is public : first function name capital
 func GetQuestion(c echo.Context) error {
 	// bind request
@@ -75,29 +107,10 @@ func GetQuestion(c echo.Context) error {
 	defer cancel()
 
 	// == get data question ===
-	coll := db.MgoCollection("questions", client)
-	result, err := coll.Find(
-		ctx,
-		bson.M{
-			"to_user": req.ToUser,
-		},
-		options.Find().SetSort(bson.M{"created_at": -1}),
-	)
+	toUser := req.ToUser
+	questions, err := QueryGetQuestion(toUser, client, ctx)
 	if err != nil {
 		return err
-	}
-
-	defer result.Close(ctx)
-
-	var questions = make([]Question, 0)
-	for result.Next(ctx) {
-		var question Question
-		err = result.Decode(&question)
-		if err != nil {
-			return err
-		}
-
-		questions = append(questions, question)
 	}
 
 	return c.JSON(http.StatusOK, request.ResponseInsert{
